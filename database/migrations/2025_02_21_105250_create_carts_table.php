@@ -17,9 +17,6 @@ return new class extends Migration
         Schema::create('carts', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Order::class);
-            $table->foreignIdFor(Product::class);
-            $table->bigInteger('quantity');
-            $table->bigInteger('price');
             $table->timestamps();
         });
 
@@ -27,6 +24,8 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Cart::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Product::class)->constrained()->cascadeOnDelete();
+            $table->bigInteger('quantity');
+            $table->bigInteger('price');
             $table->timestamps();
         });
     }
