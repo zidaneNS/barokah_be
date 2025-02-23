@@ -5,7 +5,11 @@
 - [x] create logout
 
 ### Product Management
-- [ ] create new product
-- [ ] update product
-- [ ] get all products
-- [ ] delete product
+- [x] create new product
+- [x] update product
+- [x] get all products
+- [x] get product by id
+- [x] delete product
+
+## Optional
+- [ ] add authorization for product management (create, update, delete)
