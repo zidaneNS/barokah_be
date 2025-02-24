@@ -11,5 +11,10 @@
 - [x] get product by id
 - [x] delete product
 
+### Product Ordering
+- [x] attach product to cart (attach cart to available order or new order)
+- [ ] update cart (delete product, update quantity)
+- [ ] delete order
+
 ## Optional
 - [ ] add authorization for product management (create, update, delete)
