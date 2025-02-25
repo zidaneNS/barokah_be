@@ -135,13 +135,21 @@ class OrderController extends Controller implements HasMiddleware
 
         $cart = Cart::find($validatedFields["cart_id"]);
         
+        $product = $cart->products()->find($validatedFields["product_id"]);
+        
+        $prevQuantity = $product->pivot->quantity;
+        
+        $totalPrice = 0;
+        
+        $order = Order::find($cart->order->id);
+
+        $product->update([
+            "stock" => $product->stock + $prevQuantity - $validatedFields["quantity"]
+        ]);
+
         $cart->products()->updateExistingPivot($validatedFields["product_id"], [
             "quantity" => $validatedFields["quantity"]
         ]);
-
-        $totalPrice = 0;
-
-        $order = Order::find($cart->order->id);
 
         foreach ($order->carts as $carts) {
             foreach ($carts->products as $products) {

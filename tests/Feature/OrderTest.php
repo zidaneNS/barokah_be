@@ -136,6 +136,50 @@ test('can update quantity', function () {
     ]);
 });
 
+test('product stock increase when updating quantity lesser than previous quantity', function () {
+    $user = User::factory()->create();
+    Sanctum::actingAs($user);
+
+    $user = User::factory()->create();
+    Sanctum::actingAs($user);
+
+    $product = Product::factory()->create([
+        "stock" => 10,
+        "product_name" => "test"
+    ]);
+
+    // dd($product->stock);
+
+    $order = Order::factory()->create([
+        "user_id" => $user->id
+    ]);
+
+    $cart = Cart::factory()->create([
+        "order_id" => $order->id
+    ]);
+
+    $product->update([
+        "stock" => 5
+    ]);
+
+    $cart->products()->attach($product, [
+        "quantity" => 5,
+        "price" => $product->price
+    ]);
+
+    $response = $this->putJson('/api/order', [
+        "product_id" => $product->id,
+        "cart_id" => $cart->id,
+        "quantity" => 3
+    ]);
+
+    $response->assertStatus(200);
+    $this->assertDatabaseHas('products', [
+        "id" => $product->id,
+        "stock" => 7
+    ]);
+});
+
 test('can delete order', function () {
     $user = User::factory()->create();
     Sanctum::actingAs($user);
