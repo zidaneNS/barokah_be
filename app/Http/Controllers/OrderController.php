@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use App\Models\Order;
+use App\Models\Payment;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -76,6 +77,10 @@ class OrderController extends Controller implements HasMiddleware
 
         $order->update([
             "total_price" => $totalPrice
+        ]);
+
+        Payment::factory()->create([
+            "order_id" => $order->id
         ]);
 
         return response(["message" => "success"], 201);
@@ -173,6 +178,16 @@ class OrderController extends Controller implements HasMiddleware
 
         $order = Order::find($validatedFields["order_id"]);
 
+        $carts = $order->carts;
+
+        foreach ($carts as $cart) {
+            foreach ($cart->products as $product) {
+                $product->update([
+                    "stock" => $product->pivot->quantity + $product->stock
+                ]);
+            }
+        }
+
         $order->delete();
 
         return response(["message" => "success"], 200);
@@ -190,6 +205,10 @@ class OrderController extends Controller implements HasMiddleware
         $order = Order::find($cart->order->id);
 
         $product = $cart->products()->find($validatedFields["product_id"]);
+
+        $product->update([
+            "stock" => $product->stock + $product->pivot->quantity
+        ]);
         
         $order->update([
             "total_price" => $order->total_price - $product->price * $product->pivot->quantity
@@ -197,5 +216,6 @@ class OrderController extends Controller implements HasMiddleware
         $cart->products()->detach($validatedFields["product_id"]);
 
         return response(["message" => "success"], 200);
+  
     }
 }

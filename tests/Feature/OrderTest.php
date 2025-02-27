@@ -296,3 +296,90 @@ test('can get all carts', function () {
     $response->assertStatus(200);
     $response->assertJsonCount(5);
 });
+
+test('product stock increase when deleting order', function () {
+    $user = User::factory()->create();
+    Sanctum::actingAs($user);
+
+    $products = Product::factory(2)->create();
+
+    $order = Order::factory()->create([
+        "user_id" => $user->id
+    ]);
+
+    $cart = Cart::factory()->create([
+        "order_id" => $order->id
+    ]);
+
+    $cart->products()->attach($products[0], [
+        "quantity" => 2,
+        "price" => $products[0]->price
+    ]);
+
+    $cart->products()->attach($products[1], [
+        "quantity" => 3,
+        "price" => $products[1]->price
+    ]);
+    
+    $products[0]->update([
+        "stock" => $products[0]->stock - 2
+    ]);
+    
+    $products[1]->update([
+        "stock" => $products[1]->stock - 3
+    ]);
+
+    $prevStock1 = $products[0]->stock;
+    $prevStock2 = $products[1]->stock;
+    
+    $response = $this->deleteJson('/api/order', [
+        "order_id" => $order->id
+    ]);
+
+    $response->assertStatus(200);
+    $this->assertDatabaseHas('products', [
+        "id" => $products[0]->id,
+        "stock" => $prevStock1 + 2
+    ]);
+    $this->assertDatabaseHas('products', [
+        "id" => $products[1]->id,
+        "stock" => $prevStock2 + 3
+    ]);
+});
+
+test('product increase when deleting product in some cart', function () {
+    $user = User::factory()->create();
+    Sanctum::actingAs($user);
+
+    $product = Product::factory()->create();
+
+    $order = Order::factory()->create([
+        "user_id" => $user->id
+    ]);
+
+    $cart = Cart::factory()->create([
+        "order_id" => $order->id
+    ]);
+
+    $cart->products()->attach($product, [
+        "quantity" => 3,
+        "price" => $product->price
+    ]);
+
+    $product->update([
+        "stock" => $product->stock - 3
+    ]);
+
+    $prevStock = $product->stock;
+
+    $response = $this->postJson('api/order/delete', [
+        "cart_id" => $cart->id,
+        "product_id" => $product->id
+    ]);
+
+    $response->assertStatus(200);
+    $this->assertDatabaseHas('products', [
+        "id" => $product->id,
+        "stock" => $prevStock + 3
+    ]);
+});

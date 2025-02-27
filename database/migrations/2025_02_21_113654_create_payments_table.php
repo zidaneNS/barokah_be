@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Order::class);
+            $table->foreignIdFor(Order::class)->constrained()->cascadeOnDelete();
             $table->enum('payment_method', ['transfer', 'cod', 'e-wallet']);
             $table->enum('status', ['pending', 'success']);
             $table->timestamps();

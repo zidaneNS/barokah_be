@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -18,6 +19,8 @@ Route::get('/order', [OrderController::class, 'index']);
 Route::put('/order', [OrderController::class, 'update']);
 Route::delete('/order', [OrderController::class, 'destroy']);
 Route::post('/order/delete', [OrderController::class, 'deleteProduct']);
+
+Route::put('/payment', [PaymentController::class, 'update'])->middleware('auth:sanctum');
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/register', [AuthController::class, 'register']);
