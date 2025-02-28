@@ -1,3 +1,26 @@
+## route list
+
+method | url | description | json
+-------|-----|-------------|-----
+POST | api/cart | get carts by order id | order_id
+POST | api/login | login | email, password
+GET | api/logout | logout | -
+POST | api/neworder | attach product to new order | product_id, quantity
+POST | api/order | attach product to existing order | product_id, quantity, order_id
+GET | api/order | get all user's orders | -
+PUT | api/order | update product quantity | product_id, cart_id, quantity
+DELETE | api/order | delete order by id | order_id
+DELETE | api/order/delete | delete product in cart | product_id, cart_id
+PUT | api/payment | update payment status (pending/success) | order_id, status
+GET | api/product | get all products | -
+POST | api/product | create new product | product_name, description, price_stock, category_id, img_url
+GET | api/product/{product} | get product by id | -
+PUT | api/product/{product} | update product by id | product_name, description, price_stock, category_id, img_url
+DELETE | api/product/{product} | delete product by id | -
+POST | api/register | create new user | name, email, password, password_confirmation, role
+
+---
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">

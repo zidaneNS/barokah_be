@@ -18,7 +18,7 @@ Route::post('/cart', [OrderController::class, 'cart']);
 Route::get('/order', [OrderController::class, 'index']);
 Route::put('/order', [OrderController::class, 'update']);
 Route::delete('/order', [OrderController::class, 'destroy']);
-Route::post('/order/delete', [OrderController::class, 'deleteProduct']);
+Route::delete('/order/delete', [OrderController::class, 'deleteProduct']);
 
 Route::put('/payment', [PaymentController::class, 'update'])->middleware('auth:sanctum');
 

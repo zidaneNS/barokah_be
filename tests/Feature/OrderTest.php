@@ -239,7 +239,7 @@ test('can delete product from cart', function () {
         "total_price" => $product->price * 3 + $order->total_price
     ]);
 
-    $response = $this->postJson('api/order/delete', [
+    $response = $this->deleteJson('api/order/delete', [
         "cart_id" => $cart->id,
         "product_id" => $product->id
     ]);
@@ -372,7 +372,7 @@ test('product increase when deleting product in some cart', function () {
 
     $prevStock = $product->stock;
 
-    $response = $this->postJson('api/order/delete', [
+    $response = $this->deleteJson('api/order/delete', [
         "cart_id" => $cart->id,
         "product_id" => $product->id
     ]);
